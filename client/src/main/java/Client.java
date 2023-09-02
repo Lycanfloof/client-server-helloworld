@@ -33,7 +33,13 @@ public class Client
         String message;
 
         while (!(message = br.readLine()).equals("exit")) {
-            System.out.println(printer.printString(username + " : " + hostname + " : " + message));
+            long start = System.nanoTime();
+            String response = printer.printString(username + " : " + hostname + " : " + message);
+            long end = System.nanoTime();
+
+            response += "\nClient latency: " + new java.text.DecimalFormat("#.##").format((double)(end - start) * 1e-6) + " ms.\n";
+
+            System.out.println(response);
         }
 
         br.close();

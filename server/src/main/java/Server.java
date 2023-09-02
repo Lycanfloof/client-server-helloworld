@@ -20,6 +20,8 @@ public class Server
             
             adapter.activate();
             communicator.waitForShutdown();
+        } catch(Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 }

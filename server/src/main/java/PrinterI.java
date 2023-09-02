@@ -1,94 +1,49 @@
 public class PrinterI implements Demo.Printer
 {
+    private long receivedRequests = 0;
+    private long unprocessedRequests = 0;
+    private long processedTime = 0;
+
     public String printString(String s, com.zeroc.Ice.Current current)
     {
+        Request request = new Request(s);
+        receivedRequests++;
+
         String output;
+        long start = System.nanoTime();
 
-        int messageIndex = s.indexOf(":", s.indexOf(":") + 2) + 1;
-        String prefix = s.substring(0, messageIndex);
-        String message = s.substring(messageIndex).trim();
-
-        Integer integerValue;
-
-        if (message.equals("listifs")) {
-            String[] command = {"ifconfig"};
-            output = "\n\n" + executeCommand(command);
-
-        } else if (message.startsWith("listports") && message.length() > 9) {
-            String[] command = {"nmap", "-Pn", message.substring(9).trim()};
-            output = "\n\n" + executeCommand(command);
-
-        } else if (message.startsWith("!") && message.length() > 1) {
-            String[] command = {message.substring(1)};
-            output = "\n\n" + executeCommand(command);
-
-        } else if ((integerValue = getNumber(message)) != null) {
-            output = " " + getPrimeFactors(integerValue);
-
-        } else {
-            output = " " + message;
-
+        try {
+            output = request.executeRequest();
+        } catch (Exception e) {
+            output = e.getMessage();
+            unprocessedRequests++;
         }
 
-        String serverOutput = prefix + output;
-        String clientOutput = "response:" + output;
+        long end = System.nanoTime();
+
+        String perfomance_report = getPerfomanceReport(start, end);
+        String serverOutput = request.getPrefix() + output + perfomance_report;
+        String clientOutput = "\nResponse:" + output + perfomance_report;
 
         System.out.println(serverOutput);
-
         return clientOutput;
     }
 
-    private Integer getNumber(String s) {
-        try {
-            return Integer.valueOf(s);
-        } catch (Exception e) {
-            return null;
-        }
-    }
+    private String getPerfomanceReport(long start, long end) {
+        String perfomanceReport = "";
 
-    private String getPrimeFactors(int integerValue) {
-        String output = "";
+        double latency = (double) (end - start);
+        processedTime += latency;
 
-        while (integerValue % 2 == 0) {
-            output += 2 + " ";
-            integerValue /= 2;
-        }
+        double serverThroughput = (double) (receivedRequests - unprocessedRequests) / (processedTime);
+        double failureRate = (double) unprocessedRequests / receivedRequests;
+        double successRate = (double) 1 - failureRate;
 
-        for (int i = 3; i <= Math.sqrt(integerValue); i += 2) {
-            while (integerValue % i == 0) {
-                output += i + " ";
-                integerValue /= i;
-            }
-        }
+        perfomanceReport += "\n\nServer latency: " + new java.text.DecimalFormat("#.##").format(latency * 1e-6) + " ms.\n";
+        perfomanceReport += "Server throughput: " + new java.text.DecimalFormat("#.##").format(serverThroughput * 1e9) + " requests per second.\n";
+        perfomanceReport += "Server success rate: " + new java.text.DecimalFormat("#.##").format(successRate * 100) + "%\n";
+        perfomanceReport += "Server failure (unprocessed) rate: " + new java.text.DecimalFormat("#.##").format(failureRate * 100) + "%\n";
 
-        if (integerValue > 2) {
-            output += integerValue;
-        }
-
-        return output;
-    }
-
-    private String executeCommand(String[] command) {
-        String output = "";
-
-        try {
-            ProcessBuilder processBuilder = new ProcessBuilder(command);
-            processBuilder.redirectErrorStream(true);
-
-            Process process = processBuilder.start();
-
-            java.io.BufferedReader bufferedReader = new java.io.BufferedReader(
-                new java.io.InputStreamReader(process.getInputStream()));
-
-            String line;
-            
-            while ((line = bufferedReader.readLine()) != null) {
-                output += line + "\n";
-            }
-        } catch (Exception e) {
-            output = e.getMessage();
-        }
-
-        return output.trim() + "\n";
+        return perfomanceReport;
     }
 }
