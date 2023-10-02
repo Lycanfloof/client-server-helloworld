@@ -9,13 +9,13 @@ La parte del cliente se encarga de crear un proxy al emplear el archivo de confi
 ### Server:
 El servidor se encarga de crear un adaptador con la propiedad "Printer", la que establece el protocolo de comunicación a emplear y el puerto. También se define un host por defecto que se emplea para tomarlo como punto de conexión. Luego, se crea un objeto del tipo "PrinterI" que implementa la interfaz "Printer", definida en el archivo "Printer.ice". Este objeto se encarga de procesar el mensaje, ejecutar un comando si es del caso e imprimir el resultado por consola con el hostname remoto y el usuario, para finalmente mandárselo al cliente.
 
-### PrinterI:
+### RequestHandlerI:
 
 Esta clase se encarga de recibir la solicitud, procesarla empleando la clase "Request" y retornar e imprimir la respuesta. También es responsable de calcular las métricas de rendimiento del servidor con el método *getPerfomanceReport*.
 
 ### Request:
 
-Esta clase se encarga de leer y procesar la solicitud del cliente a través del método principal *executeRequest*. Este emplea los métodos auxiliares *executeCommand*, *getNumber* y *getPrimeFactors* para ejecutar comandos en la terminal, convertir una cadena de texto a un número y obtener los factores primos de un número respectivamente.
+Esta clase se encarga de leer y procesar la solicitud del cliente a través del método principal *start*. Este emplea los métodos auxiliares *executeCommand*, *getNumber* y *getPrimeFactors* para ejecutar comandos en la terminal, convertir una cadena de texto a un número y obtener los factores primos de un número respectivamente.
 
 Los comandos soportados son:
 - *listifs* - Lista las interfaces lógicas configuradas en el servidor.
