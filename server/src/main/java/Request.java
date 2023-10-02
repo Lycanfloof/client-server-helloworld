@@ -8,6 +8,7 @@ public class Request {
     private long startTime;
     private long endTime;
     private String output;
+    private boolean erroneous;
 
     public Request(String message) {
         int messageIndex = message.indexOf(":", message.indexOf(":") + 2) + 1;
@@ -15,6 +16,7 @@ public class Request {
         this.message = message.substring(messageIndex).trim();
         this.startTime = 0;
         this.endTime = 0;
+        this.erroneous = false;
     }
 
     public String getPrefix() {
@@ -31,6 +33,10 @@ public class Request {
 
     public String getOutput() {
         return output;
+    }
+
+    public boolean isErroneous() {
+        return erroneous;
     }
 
     public void start() {
@@ -63,6 +69,7 @@ public class Request {
             }
         } catch (Exception e) {
             output = "An error has occurred while processing the request.";
+            erroneous = true;
             e.printStackTrace();
         }
     }

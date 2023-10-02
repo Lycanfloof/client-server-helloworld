@@ -15,6 +15,10 @@ public class RequestHandlerI implements RequestHandler
 
         request.start();
 
+        if (request.isErroneous()) {
+            unprocessedRequests++;
+        }
+
         return printAndGetResponse(request);
     }
 
