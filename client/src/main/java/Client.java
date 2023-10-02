@@ -1,47 +1,59 @@
+import AppInterface.RequestHandlerPrx;
+import com.zeroc.Ice.Communicator;
+import com.zeroc.Ice.Util;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.text.DecimalFormat;
+
 public class Client
 {
     public static void main(String[] args)
     {
-        java.util.List<String> extraArgs = new java.util.ArrayList<>();
-
-        try(com.zeroc.Ice.Communicator communicator = com.zeroc.Ice.Util.initialize(args,"config.client",extraArgs))
+        try
+        {    
+            clientInit(args);
+        }
+        catch (Exception e)
         {
-            Demo.PrinterPrx printer = Demo.PrinterPrx.checkedCast(
-                communicator.propertyToProxy("Printer.Proxy")).ice_twoway().ice_secure(false);
-
-            if(printer == null)
-            {
-                throw new Error("Invalid proxy.");
-            }
-
-            try {
-                printMessage(printer);
-            } catch (java.io.IOException e) {
-                e.printStackTrace();
-            }
+            e.printStackTrace();
         }
     }
-    
-    private static void printMessage(Demo.PrinterPrx printer) throws java.io.IOException {
-        String username = System.getProperty("user.name");
-        String hostname = java.net.InetAddress.getLocalHost().getHostName();
 
-        java.io.BufferedReader br = new java.io.BufferedReader(
-            new java.io.InputStreamReader(System.in));
+    private static void clientInit(String[] args) throws IOException {
 
-        System.out.println("Enter a message. You can type 'exit' to close the connection to the server.");
-        String message;
+        try(Communicator communicator = Util.initialize(args, "config.client"))
+        {
+            String username = System.getProperty("user.name");
+            String hostname = InetAddress.getLocalHost().getHostName();
+            RequestHandlerPrx serverProxy = RequestHandlerPrx.checkedCast(
+                communicator.propertyToProxy("Server.Proxy")).ice_twoway().ice_secure(false);
 
-        while (!(message = br.readLine()).equals("exit")) {
-            long start = System.nanoTime();
-            String response = printer.printString(username + " : " + hostname + " : " + message);
-            long end = System.nanoTime();
+            if (serverProxy == null)
+            {
+                throw new Error("Invalid Proxy: Property might not exist in the configuration file.");
+            }
 
-            response += "\nClient latency: " + new java.text.DecimalFormat("#.##").format((double)(end - start) * 1e-6) + " ms.\n";
-
-            System.out.println(response);
+            startRequestLoop(serverProxy, username, hostname);
         }
+    }
 
-        br.close();
+    private static void startRequestLoop(RequestHandlerPrx serverProxy, String username, String hostname) throws IOException {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in)))
+        {
+            System.out.println("Enter a message. You can type 'exit' to close the connection to the server.");
+            String message;
+
+            while (!(message = br.readLine()).equals("exit")) {
+                long start = System.nanoTime();
+                String response = serverProxy.handleRequest(username + " : " + hostname + " : " + message);
+                long end = System.nanoTime();
+
+                response += "\nClient latency: " + new DecimalFormat("#.##").format((double)(end - start) * 1e-6) + " ms.\n";
+
+                System.out.println(response);
+            }
+        }
     }
 }

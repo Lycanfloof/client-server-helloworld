@@ -1,10 +1,10 @@
 <state>
-  <timestamp value='1692825618599' />
+  <timestamp value='1696209529444' />
   <sourceSet name='default'>
-    <source name='/home/lyca22/Downloads/MINE/hello-world-ciclo-kbd-ArielPabon-JesusRodriguez/Printer.ice'>
-      <file name='/home/lyca22/Downloads/MINE/hello-world-ciclo-kbd-ArielPabon-JesusRodriguez/server/build/generated-src/Demo/Printer.java' />
-      <file name='/home/lyca22/Downloads/MINE/hello-world-ciclo-kbd-ArielPabon-JesusRodriguez/server/build/generated-src/Demo/PrinterPrx.java' />
-      <file name='/home/lyca22/Downloads/MINE/hello-world-ciclo-kbd-ArielPabon-JesusRodriguez/server/build/generated-src/Demo/_PrinterPrxI.java' />
+    <source name='/home/lyca22/Documents/Projects/ARQSFT/hello-world-ciclo-kbd-ArielPabon-JesusRodriguez/RequestHandler.ice'>
+      <file name='/home/lyca22/Documents/Projects/ARQSFT/hello-world-ciclo-kbd-ArielPabon-JesusRodriguez/server/build/generated-src/AppInterface/RequestHandler.java' />
+      <file name='/home/lyca22/Documents/Projects/ARQSFT/hello-world-ciclo-kbd-ArielPabon-JesusRodriguez/server/build/generated-src/AppInterface/RequestHandlerPrx.java' />
+      <file name='/home/lyca22/Documents/Projects/ARQSFT/hello-world-ciclo-kbd-ArielPabon-JesusRodriguez/server/build/generated-src/AppInterface/_RequestHandlerPrxI.java' />
     </source>
     <arg value='/usr/bin/slice2java' />
     <arg value='-I/usr/share/ice/slice' />

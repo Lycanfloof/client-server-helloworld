@@ -1,27 +1,25 @@
+import com.zeroc.Ice.Communicator;
+import com.zeroc.Ice.Object;
+import com.zeroc.Ice.ObjectAdapter;
+import com.zeroc.Ice.Util;
+
 public class Server
 {
     public static void main(String[] args)
     {
-        java.util.List<String> extraArgs = new java.util.ArrayList<String>();
+        ServerInit(args);
+    }
 
-        try(com.zeroc.Ice.Communicator communicator = com.zeroc.Ice.Util.initialize(args,"config.server",extraArgs))
+    private static void ServerInit(String[] args) {
+        try(Communicator communicator = Util.initialize(args, "config.server"))
         {
-            if(!extraArgs.isEmpty())
-            {
-                System.err.println("too many arguments");
-                for(String v: extraArgs){
-                    System.out.println(v);
-                }
-            }
-            
-            com.zeroc.Ice.ObjectAdapter adapter = communicator.createObjectAdapter("Printer");
-            com.zeroc.Ice.Object object = new PrinterI();
-            adapter.add(object, com.zeroc.Ice.Util.stringToIdentity("SimplePrinter"));
-            
+            ObjectAdapter adapter = communicator.createObjectAdapter("Server");
+            Object object = new RequestHandlerI();
+
+            adapter.add(object, Util.stringToIdentity("RequestHandler"));
             adapter.activate();
+            
             communicator.waitForShutdown();
-        } catch(Exception e) {
-            System.out.println(e.getMessage());
         }
     }
 }
