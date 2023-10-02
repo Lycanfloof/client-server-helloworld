@@ -4,10 +4,10 @@
 A continuación se describe la implementación del *hello-world*:
 
 ### Client:
-La parte del cliente se encarga de crear un proxy al emplear el archivo de configuración "config.client" en el que se define el host con el que se va a conectar (el servidor), el protocolo de comunicación, el puerto y un identificador del objeto al que se va a conectar. En este caso se conecta con el objeto "SimplePrinter" y emplea el método "printString" para enviar comandos al servidor en un bucle. Este último se acaba al escribir "exit" en la consola.
+La parte del cliente se encarga de crear un proxy al emplear el archivo de configuración "config.client" en el que se define el host con el que se va a conectar (el servidor), el protocolo de comunicación, el puerto y un identificador del objeto al que se va a conectar. En este caso se conecta con el objeto "RequestHandler" y emplea el método "handleRequest" para enviar comandos al servidor en un bucle. Este último se acaba al escribir "exit" en la consola.
 
 ### Server:
-El servidor se encarga de crear un adaptador con la propiedad "Printer", la que establece el protocolo de comunicación a emplear y el puerto. También se define un host por defecto que se emplea para tomarlo como punto de conexión. Luego, se crea un objeto del tipo "PrinterI" que implementa la interfaz "Printer", definida en el archivo "Printer.ice". Este objeto se encarga de procesar el mensaje, ejecutar un comando si es del caso e imprimir el resultado por consola con el hostname remoto y el usuario, para finalmente mandárselo al cliente.
+El servidor se encarga de crear un adaptador con la propiedad "RequestHandler", la que establece el protocolo de comunicación a emplear y el puerto. También se define un host por defecto que se emplea para tomarlo como punto de conexión. Luego, se crea un objeto del tipo "RequestHandlerI" que implementa la interfaz "RequestHandler", definida en el archivo "RequestHandlerI.ice". Este objeto se encarga de procesar el mensaje, ejecutar un comando si es del caso e imprimir el resultado por consola con el hostname remoto y el usuario, para finalmente mandárselo al cliente.
 
 ### RequestHandlerI:
 
@@ -15,7 +15,7 @@ Esta clase se encarga de recibir la solicitud, procesarla empleando la clase "Re
 
 ### Request:
 
-Esta clase se encarga de leer y procesar la solicitud del cliente a través del método principal *start*. Este emplea los métodos auxiliares *executeCommand*, *getNumber* y *getPrimeFactors* para ejecutar comandos en la terminal, convertir una cadena de texto a un número y obtener los factores primos de un número respectivamente.
+Esta clase se encarga de leer y procesar la solicitud del cliente a través del método principal *start*. Este emplea los métodos auxiliares *executeCommand*, *convertToNumber* y *getPrimeFactors* para ejecutar comandos en la terminal, convertir una cadena de texto a un número y obtener los factores primos de un número respectivamente.
 
 Los comandos soportados son:
 - *listifs* - Lista las interfaces lógicas configuradas en el servidor.
