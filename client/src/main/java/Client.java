@@ -60,13 +60,19 @@ public class Client {
             String message;
 
             while (!(message = br.readLine()).equalsIgnoreCase("exit")) {
-                long start = System.nanoTime();
-                String response = serverProxy.handleRequest(clientProxy, username + " : " + hostname + " : " + message);
-                long end = System.nanoTime();
+                final String writtenMessage = message;
 
-                response += getClientLatency(start, end);
+                Runnable runnable = () -> {
+                    long start = System.nanoTime();
+                    String response = serverProxy.handleRequest(clientProxy, username + " : " + hostname + " : " + writtenMessage);
+                    long end = System.nanoTime();
 
-                System.out.println(response);
+                    response += getClientLatency(start, end);
+                    System.out.println(response);
+                };
+
+                Thread thread = new Thread(runnable);
+                thread.start();
             }
         }
     }
