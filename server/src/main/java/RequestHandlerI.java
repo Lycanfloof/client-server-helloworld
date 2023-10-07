@@ -1,3 +1,4 @@
+import AppInterface.ReceiverPrx;
 import AppInterface.RequestHandler;
 import com.zeroc.Ice.Current;
 import java.text.DecimalFormat;
@@ -8,7 +9,8 @@ public class RequestHandlerI implements RequestHandler
     private long unprocessedRequests = 0;
     private long processedTime = 0;
 
-    public String handleRequest(String s, Current current)
+    @Override
+    public String handleRequest(ReceiverPrx clientProxy, String s, Current current)
     {
         Request request = new Request(s);
         receivedRequests++;
@@ -23,22 +25,20 @@ public class RequestHandlerI implements RequestHandler
     }
 
     private String printAndGetResponse(Request request) {
-        String perfomanceReport = getPerfomanceReport(request.requestTime());
+        String performanceReport = getPerformanceReport(request.requestTime());
 
-        String serverOutput = request.getPrefix() + request.getOutput() + perfomanceReport;
-        String clientOutput = "\nResponse:" + request.getOutput() + perfomanceReport;
+        String serverOutput = request.getPrefix() + request.getOutput() + performanceReport;
+        String clientOutput = "\nResponse:" + request.getOutput() + performanceReport;
 
         System.out.println(serverOutput);
 
         return clientOutput;
     }
 
-    private String getPerfomanceReport(long requestTime) {
+    private String getPerformanceReport(long latency) {
         String perfomanceReport = "";
 
-        double latency = (double) (requestTime);
         processedTime += latency;
-
         double serverThroughput = (double) (receivedRequests - unprocessedRequests) / (processedTime);
         double failureRate = (double) unprocessedRequests / receivedRequests;
         double successRate = (double) 1 - failureRate;
