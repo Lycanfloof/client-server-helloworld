@@ -12,30 +12,32 @@ public class RequestHandlerI implements RequestHandler
     @Override
     public String handleRequest(ReceiverPrx clientProxy, String s, Current current)
     {
-        Request request = new Request(s);
         receivedRequests++;
-
+        Request request = new Request(s);
         request.start();
 
         if (request.isErroneous()) {
             unprocessedRequests++;
         }
 
-        return printAndGetResponse(request);
+        String performanceReport = buildPerformanceReport(request.requestTime());
+        String serverResponse = buildServerResponse(request) + performanceReport;
+        String clientResponse = buildClientResponse(request) + performanceReport;
+
+        System.out.println(serverResponse);
+
+        return clientResponse;
     }
 
-    private String printAndGetResponse(Request request) {
-        String performanceReport = getPerformanceReport(request.requestTime());
-
-        String serverOutput = request.getPrefix() + request.getOutput() + performanceReport;
-        String clientOutput = "\nResponse:" + request.getOutput() + performanceReport;
-
-        System.out.println(serverOutput);
-
-        return clientOutput;
+    private String buildServerResponse(Request request) {
+        return request.getPrefix() + request.getOutput();
     }
 
-    private String getPerformanceReport(long latency) {
+    private String buildClientResponse(Request request) {
+        return "\nResponse:" + request.getOutput();
+    }
+
+    private String buildPerformanceReport(long latency) {
         String perfomanceReport = "";
 
         processedTime += latency;

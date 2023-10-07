@@ -3,8 +3,8 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 
 public class Request {
-    private String prefix;
-    private String message;
+    private final String prefix;
+    private final String message;
     private long startTime;
     private long endTime;
     private String output;
@@ -21,10 +21,6 @@ public class Request {
 
     public String getPrefix() {
         return prefix;
-    }
-
-    public String getMessage() {
-        return message;
     }
 
     public long requestTime() {
@@ -48,7 +44,6 @@ public class Request {
     private void startRequest() {
         try {
             Long integerValue = convertToNumber(message);
-
             if (message.equals("listifs")) {
                 String[] command = {"ifconfig"};
                 output = "\n\n" + executeCommand(command);
@@ -68,9 +63,9 @@ public class Request {
                 output = " " + message;
             }
         } catch (Exception e) {
+            e.printStackTrace();
             output = "An error has occurred while processing the request.";
             erroneous = true;
-            e.printStackTrace();
         }
     }
 
@@ -83,7 +78,7 @@ public class Request {
     }
 
     private String executeCommand(String[] command) throws IOException {
-        String output = "";
+        StringBuilder output = new StringBuilder();
 
             ProcessBuilder processBuilder = new ProcessBuilder(command);
             processBuilder.redirectErrorStream(true);
@@ -96,31 +91,31 @@ public class Request {
             String line;
             
             while ((line = bufferedReader.readLine()) != null) {
-                output += line + "\n";
+                output.append(line).append("\n");
             }
 
-        return output.trim() + "\n";
+        return output.toString().trim() + "\n";
     }
 
     private String calculatePrimeFactors(long integerValue) {
-        String output = "";
+        StringBuilder output = new StringBuilder();
 
         while (integerValue % 2 == 0) {
-            output += 2 + " ";
+            output.append(2 + " ");
             integerValue /= 2;
         }
 
         for (long i = 3; i <= Math.sqrt(Math.abs(integerValue)); i += 2) {
             while (integerValue % i == 0) {
-                output += i + " ";
+                output.append(i).append(" ");
                 integerValue /= i;
             }
         }
 
         if (Math.abs(integerValue) > 2) {
-            output += integerValue;
+            output.append(integerValue);
         }
 
-        return output;
+        return output.toString();
     }
 }
