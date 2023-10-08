@@ -22,4 +22,12 @@ public class CommonLibrary {
 
         return output.toString().trim() + "\n";
     }
+
+    public static Long convertToNumber(String s) {
+        try {
+            return Long.valueOf(s);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

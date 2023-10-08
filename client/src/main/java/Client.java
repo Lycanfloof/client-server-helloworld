@@ -28,7 +28,6 @@ public class Client {
             String hostname = InetAddress.getLocalHost().getHostName();
 
             startRequestLoop(serverProxy, clientProxy, username, hostname);
-            communicator.waitForShutdown();
         }
     }
 
@@ -78,6 +77,6 @@ public class Client {
     }
 
     private static String getClientLatency(long start, long end) {
-        return "\nClient latency: " + new DecimalFormat("#.##").format((double)(end - start) * 1e-6) + " ms.\n";
+        return "Client latency: " + new DecimalFormat("#.##").format((double)(end - start) * 1e-6) + " ms.\n";
     }
 }

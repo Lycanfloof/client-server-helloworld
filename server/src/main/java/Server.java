@@ -16,23 +16,29 @@ public class Server
     private static void serverInit(String[] args) {
         try(Communicator communicator = Util.initialize(args, "config.server"))
         {
-            ObjectAdapter adapter = communicator.createObjectAdapter("Server");
-            RequestHandlerI object = new RequestHandlerI(new ConcurrentHashMap<>(),
-                    new NotFoundCommand(),
-                    new ConcurrentHashMap<>());
-            commandMapInit(object);
-
-            adapter.add(object, Util.stringToIdentity("RequestHandler"));
-            adapter.activate();
-            
+            adapterInit(communicator);
             communicator.waitForShutdown();
         }
     }
 
-    private static void commandMapInit(RequestHandlerI requestHandler) {
+    private static void adapterInit(Communicator communicator) {
+        ObjectAdapter adapter = communicator.createObjectAdapter("Server");
+        RequestHandlerI requestHandler = createRequestHandler();
+
+        adapter.add(requestHandler, Util.stringToIdentity("RequestHandler"));
+        adapter.activate();
+    }
+
+    private static RequestHandlerI createRequestHandler() {
+        RequestHandlerI requestHandler = new RequestHandlerI(
+                new ConcurrentHashMap<>(),
+                new NotFoundCommand(),
+                new ConcurrentHashMap<>());
+
         ConcurrentMap<String, Command> commandMap = requestHandler.getCommandMap();
         ConcurrentMap<String, ReceiverPrx> proxyMap = requestHandler.getProxyMap();
 
+        commandMap.put("measure-performance", new PerformanceReportCommand(requestHandler));
         commandMap.put("register", new RegisterCommand(proxyMap));
         commandMap.put("list-clients", new ListClientsCommand(proxyMap));
         commandMap.put("to", new SendMessageCommand(proxyMap));
@@ -41,5 +47,7 @@ public class Server
         commandMap.put("list-ports", new ListPortsCommand());
         commandMap.put("execute", new ExecuteSystemCommand());
         commandMap.put("prime-factors", new PrimeFactorsCommand());
+
+        return requestHandler;
     }
 }
