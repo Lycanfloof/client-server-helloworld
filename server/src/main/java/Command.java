@@ -1,3 +1,5 @@
+import AppInterface.ReceiverPrx;
+
 public abstract class Command {
     private long startTime;
     private long endTime;
@@ -10,10 +12,10 @@ public abstract class Command {
         this.erroneous = false;
     }
 
-    public void execute(String[] args) {
+    public void execute(ReceiverPrx clientProxy, String username, String args) {
         try {
             startTime = System.nanoTime();
-            executeProcess(args);
+            executeProcess(clientProxy, username, args);
             endTime = System.nanoTime();
         } catch (Exception e) {
             setErroneous();
@@ -21,7 +23,7 @@ public abstract class Command {
         }
     }
 
-    protected abstract void executeProcess(String[] args) throws Exception;
+    protected abstract void executeProcess(ReceiverPrx clientProxy, String username, String args) throws Exception;
 
     public long getExecutionTime() {
         return endTime - startTime;

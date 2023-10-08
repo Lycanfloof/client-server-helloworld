@@ -1,7 +1,9 @@
+import AppInterface.ReceiverPrx;
+
 public class PrimeFactorsCommand extends Command {
     @Override
-    public void executeProcess(String[] args) {
-        Long number = convertToNumber(args[0]);
+    public void executeProcess(ReceiverPrx clientProxy, String username, String args) {
+        Long number = convertToNumber(args.trim());
         if (number != null)
             setOutput(calculatePrimeFactors(number));
         else

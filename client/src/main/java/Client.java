@@ -50,7 +50,7 @@ public class Client {
         adapter.activate();
 
         return ReceiverPrx.checkedCast(
-                adapter.createProxy(Util.stringToIdentity("Receiver")).ice_twoway().ice_secure(false));
+                adapter.createProxy(Util.stringToIdentity("Receiver")).ice_twoway().ice_secure(false)).ice_timeout(5000);
     }
 
     private static void startRequestLoop(RequestHandlerPrx serverProxy, ReceiverPrx clientProxy, String username, String hostname) throws IOException {

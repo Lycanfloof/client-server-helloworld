@@ -8,14 +8,14 @@ public class RequestHandlerI implements RequestHandler
 {
     private final ConcurrentMap<String, Command> commandMap;
     private final Command notFoundCommand;
-    private ConcurrentMap<String, ReceiverPrx> proxyMap;
+    private final ConcurrentMap<String, ReceiverPrx> proxyMap;
     private long receivedRequests;
     private long unprocessedRequests;
     private long processedTime;
 
-    public RequestHandlerI(ConcurrentMap<String, ReceiverPrx> proxyMap,
-                           ConcurrentMap<String, Command> commandMap,
-                           Command notFoundCommand) {
+    public RequestHandlerI(ConcurrentMap<String, Command> commandMap,
+                           Command notFoundCommand,
+                           ConcurrentMap<String, ReceiverPrx> proxyMap) {
         this.proxyMap = proxyMap;
         this.commandMap = commandMap;
         this.notFoundCommand = notFoundCommand;
@@ -30,7 +30,7 @@ public class RequestHandlerI implements RequestHandler
         receivedRequests++;
         Request request = new Request(s);
         Command command = commandMap.getOrDefault(request.getCommand(), notFoundCommand);
-        command.execute(request.getArgs());
+        command.execute(clientProxy, request.getUsername(), request.getArgs());
 
         if (command.isErroneous()) {
             unprocessedRequests++;
@@ -60,5 +60,13 @@ public class RequestHandlerI implements RequestHandler
         performanceReport += "Server failure (unprocessed) rate: " + new DecimalFormat("#.##").format(failureRate * 100) + "%\n";
 
         return performanceReport;
+    }
+
+    public ConcurrentMap<String, Command> getCommandMap() {
+        return commandMap;
+    }
+
+    public ConcurrentMap<String, ReceiverPrx> getProxyMap() {
+        return proxyMap;
     }
 }
