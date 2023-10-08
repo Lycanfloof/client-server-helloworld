@@ -16,12 +16,20 @@ public class RequestHandlerI implements RequestHandler
     public RequestHandlerI(ConcurrentMap<String, Command> commandMap,
                            Command notFoundCommand,
                            ConcurrentMap<String, ReceiverPrx> proxyMap) {
-        this.proxyMap = proxyMap;
         this.commandMap = commandMap;
         this.notFoundCommand = notFoundCommand;
+        this.proxyMap = proxyMap;
         this.receivedRequests = 0;
         this.unprocessedRequests = 0;
         this.processedTime = 0;
+    }
+
+    public ConcurrentMap<String, Command> getCommandMap() {
+        return commandMap;
+    }
+
+    public ConcurrentMap<String, ReceiverPrx> getProxyMap() {
+        return proxyMap;
     }
 
     @Override
@@ -60,13 +68,5 @@ public class RequestHandlerI implements RequestHandler
         performanceReport += "Server failure (unprocessed) rate: " + new DecimalFormat("#.##").format(failureRate * 100) + "%\n";
 
         return performanceReport;
-    }
-
-    public ConcurrentMap<String, Command> getCommandMap() {
-        return commandMap;
-    }
-
-    public ConcurrentMap<String, ReceiverPrx> getProxyMap() {
-        return proxyMap;
     }
 }

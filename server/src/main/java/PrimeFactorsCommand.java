@@ -3,11 +3,11 @@ import AppInterface.ReceiverPrx;
 public class PrimeFactorsCommand extends Command {
     @Override
     public void executeProcess(ReceiverPrx clientProxy, String username, String args) {
-        Long number = convertToNumber(args.trim());
-        if (number != null)
-            setOutput(calculatePrimeFactors(number));
+        Long integer = convertToNumber(args);
+        if (integer != null)
+            setOutput(calculatePrimeFactors(integer));
         else
-            setOutput("The given argument isn't valid.");
+            setOutput("The given argument isn't valid because it's not a number.");
     }
 
     private Long convertToNumber(String s) {

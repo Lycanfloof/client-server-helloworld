@@ -11,11 +11,12 @@ public class RegisterCommand extends Command {
 
     @Override
     protected void executeProcess(ReceiverPrx clientProxy, String username, String args) {
-        if (proxyMap.get(username) == null) {
-            proxyMap.put(username, clientProxy);
-            setOutput("You have been registered successfully.");
-        } else {
-            setOutput("That name has already been chosen.");
+        if (proxyMap.get(username) != null) {
+            setOutput("Registration wasn't possible because the name has already been picked.");
+            return;
         }
+
+        proxyMap.put(username, clientProxy);
+        setOutput("You have been registered successfully.");
     }
 }

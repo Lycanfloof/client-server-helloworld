@@ -11,8 +11,8 @@ public class ListClientsCommand extends Command {
     }
 
     @Override
-    protected void executeProcess(ReceiverPrx clientProxy, String username, String args) throws Exception {
-        String nameList = Arrays.toString(proxyMap.keySet().toArray());
-        setOutput(nameList);
+    protected void executeProcess(ReceiverPrx clientProxy, String username, String args) {
+        String receiverList = Arrays.toString(proxyMap.keySet().toArray());
+        setOutput(receiverList);
     }
 }

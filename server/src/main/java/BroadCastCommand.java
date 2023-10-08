@@ -11,18 +11,17 @@ public class BroadCastCommand extends Command {
 
     @Override
     protected void executeProcess(ReceiverPrx clientProxy, String username, String args) {
-        String message = args.trim();
-        if (message.isEmpty()) {
-            setOutput("The message couldn't be sent because is empty.");
+        if (args.isEmpty()) {
+            setOutput("The message couldn't be sent because it is empty.");
             return;
         }
 
-        proxyMap.values().forEach((ReceiverPrx proxy) -> {
-            if (clientProxy != proxy) {
-                proxy.printString(message);
+        proxyMap.keySet().forEach((String receiver) -> {
+            if (!username.equals(receiver)) {
+                proxyMap.get(receiver).printString(args);
             }
         });
 
-        setOutput("Message sent to every client registered in the server.");
+        setOutput("The message was sent to every registered client in the server.");
     }
 }

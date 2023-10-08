@@ -1,7 +1,5 @@
 import AppInterface.ReceiverPrx;
-import AppInterface.RequestHandler;
 import com.zeroc.Ice.Communicator;
-import com.zeroc.Ice.Object;
 import com.zeroc.Ice.ObjectAdapter;
 import com.zeroc.Ice.Util;
 
@@ -19,8 +17,9 @@ public class Server
         try(Communicator communicator = Util.initialize(args, "config.server"))
         {
             ObjectAdapter adapter = communicator.createObjectAdapter("Server");
-            RequestHandlerI object = new RequestHandlerI(new ConcurrentHashMap<>(), new NotFoundCommand(), new ConcurrentHashMap<>());
-
+            RequestHandlerI object = new RequestHandlerI(new ConcurrentHashMap<>(),
+                    new NotFoundCommand(),
+                    new ConcurrentHashMap<>());
             commandMapInit(object);
 
             adapter.add(object, Util.stringToIdentity("RequestHandler"));
@@ -37,10 +36,10 @@ public class Server
         commandMap.put("register", new RegisterCommand(proxyMap));
         commandMap.put("list-clients", new ListClientsCommand(proxyMap));
         commandMap.put("to", new SendMessageCommand(proxyMap));
-        commandMap.put("bc", new BroadCastCommand(proxyMap));
+        commandMap.put("broadcast", new BroadCastCommand(proxyMap));
         commandMap.put("list-ifs", new ListInterfacesCommand());
         commandMap.put("list-ports", new ListPortsCommand());
-        commandMap.put("os-command", new ExecuteSystemCommand());
+        commandMap.put("execute", new ExecuteSystemCommand());
         commandMap.put("prime-factors", new PrimeFactorsCommand());
     }
 }

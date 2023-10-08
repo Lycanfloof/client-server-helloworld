@@ -13,23 +13,24 @@ public class SendMessageCommand extends Command {
     protected void executeProcess(ReceiverPrx clientProxy, String username, String args) {
         String[] command = args.split(":");
         if (command.length < 2) {
-            setOutput("Command formatted incorrectly.");
+            setOutput("The message couldn't be sent due to a formatting error on your part.");
             return;
         }
 
-        String addressee = command[0];
-        if (username.equals(addressee)) {
-            setOutput("You cannot send messages to yourself. Why would you do that?");
+        String receiver = command[0];
+        if (username.equals(receiver)) {
+            setOutput("You cannot send messages to yourself (ha ha, you're lonely).");
             return;
         }
 
-        ReceiverPrx remoteProxy = proxyMap.get(addressee);
-        if (remoteProxy != null) {
-            String message = command[1].trim();
-            remoteProxy.printString(message);
-            setOutput("Message sent successfully.");
-        } else {
-            setOutput("The name isn't registered in the server.");
+        ReceiverPrx receiverPrx = proxyMap.get(receiver);
+        if (receiverPrx == null) {
+            setOutput("The message couldn't be sent because the receiver isn't registered.");
+            return;
         }
+
+        String message = command[1].trim();
+        receiverPrx.printString(message);
+        setOutput("Message sent successfully.");
     }
 }

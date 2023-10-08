@@ -9,17 +9,15 @@ public class Request {
         String command = request.substring(commandIndex).trim();
         int argumentsIndex = command.indexOf(" ");
 
-        String prefix = request.substring(0, commandIndex);
-
-        String[] info = prefix.split(":");
-        this.username = info[0].trim();
-        this.hostname = info[1].trim();
+        String[] strings = request.split(":");
+        this.username = strings[0].trim();
+        this.hostname = strings[1].trim();
 
         if (argumentsIndex == -1) {
             this.command = command;
             this.args = "";
         } else {
-            this.command = command.substring(0, argumentsIndex);
+            this.command = command.substring(0, argumentsIndex).trim();
             this.args = command.substring(argumentsIndex).trim();
         }
     }
@@ -33,7 +31,7 @@ public class Request {
     }
 
     public String getPrefix() {
-        return username + ":" + hostname;
+        return username + " : " + hostname;
     }
 
     public String getCommand() {

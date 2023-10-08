@@ -8,17 +8,17 @@ public class CommonLibrary {
 
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         processBuilder.redirectErrorStream(true);
-
         Process process = processBuilder.start();
 
         BufferedReader bufferedReader = new BufferedReader(
                 new InputStreamReader(process.getInputStream()));
 
         String line;
-
         while ((line = bufferedReader.readLine()) != null) {
             output.append(line).append("\n");
         }
+
+        bufferedReader.close();
 
         return output.toString().trim() + "\n";
     }
