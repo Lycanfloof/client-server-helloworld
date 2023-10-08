@@ -26,12 +26,8 @@ public class Request {
         return username;
     }
 
-    public String getHostname() {
-        return hostname;
-    }
-
     public String getPrefix() {
-        return username + " : " + hostname;
+        return username + " : " + hostname + " : ";
     }
 
     public String getCommand() {
