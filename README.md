@@ -3,43 +3,22 @@
 
 A continuación se describe la implementación del *hello-world*:
 
-### Client:
-La parte del cliente se encarga de crear un proxy al emplear el archivo de configuración "config.client" en el que se define el host con el que se va a conectar (el servidor), el protocolo de comunicación, el puerto y un identificador del objeto al que se va a conectar. En este caso se conecta con el objeto "RequestHandler" y emplea el método "handleRequest" para enviar comandos al servidor en un bucle. Este último se acaba al escribir "exit" en la consola.
+###Client:
 
-### Server:
-El servidor se encarga de crear un adaptador con la propiedad "RequestHandler", la que establece el protocolo de comunicación a emplear y el puerto. También se define un host por defecto que se emplea para tomarlo como punto de conexión. Luego, se crea un objeto del tipo "RequestHandlerI" que implementa la interfaz "RequestHandler", definida en el archivo "RequestHandlerI.ice". Este objeto se encarga de procesar el mensaje, ejecutar un comando si es del caso e imprimir el resultado por consola con el hostname remoto y el usuario, para finalmente mandárselo al cliente.
+La parte del cliente se encarga de crear un proxy para el servicio "RequestHandler" del servidor y crear otro de sí mismo para enviarlo y que le hagan callback. Para este proceso se emplea el archivo de configuración "config.client", definiendo los endpoints que se utilizan para la creación de ambos proxies. Al final, el cliente llama al proceso "handleRequest" del proxy del servidor para mandarle solicitudes en forma de comandos.
 
-### RequestHandlerI:
+###Server:
 
-Esta clase se encarga de recibir la solicitud, procesarla empleando la clase "Request" y retornar e imprimir la respuesta. También es responsable de calcular las métricas de rendimiento del servidor con el método *getPerfomanceReport*.
-
-### Request:
-
-Esta clase se encarga de leer y procesar la solicitud del cliente a través del método principal *start*. Este emplea los métodos auxiliares *executeCommand*, *convertToNumber* y *getPrimeFactors* para ejecutar comandos en la terminal, convertir una cadena de texto a un número y obtener los factores primos de un número respectivamente.
+El servidor se encarga de exponer un objeto de tipo "RequestHandler" a través de un adaptador de ICE, empleando el archivo de configuración "server.config" para establecer los endpoints del servicio. Este objeto implementa la interfaz "RequestHandler" definida en el archivo "RequestHandler.ice" y se encarga de procesar las solicitudes de los usuarios con la lista de comandos especificada en el tiempo de construcción. También se encarga de mantener contacto con los usuarios a través de sus proxies, empleando el patrón de callback para mandarles mensajes.
 
 Los comandos soportados son:
-- *listifs* - Lista las interfaces lógicas configuradas en el servidor.
-- *listports [host o dirección_ip]* - Lista los puertos abiertos del host especificado.
-- *[número entero]* - Retorna los factores primos del número.
-- *![comando]* - Ejecuta el comando escrito por el usuario.
 
-### Métricas calculadas por software:
-
-$Latencia=TiempoFinal-TiempoInicial$
-
-- Tiempo_Final hace referencia al instante en el que se acabó de procesar la solicitud. 
-
-- Tiempo_Inicial hace referencia al instante en el que se empezó a procesar la solicitud.
-
-- La medición se hizo en nanosegundos y se convirtió a milisegundos al multiplicar la $Latencia$ por $10^{-6}$.
-
-$Throughput=\frac{CantidadSolicitudes}{Tiempo}$
-
-- En este caso, la cantidad de solicitudes va aumentando a medida que las va procesando, y el tiempo es la suma de las latencias por parte del servidor para cada solicitud. La medición se muestra en segundos, ya que se multiplicó el tiempo por $10^{-9}$.
-
-$ReceivedRequests=ProcessedRequests+UnprocessedRequests$
-
-$SuccessRate=\frac{ProcessedRequests}{ReceivedRequests}\cdot100$%
-
-$UnprocessedRate=\frac{UnprocessedRequests}{ReceivedRequests}\cdot100$%
-
+- measure-performance [tiempo en milisegundos]
+- register
+- list-clients
+- to [recibidor]: [mensaje]
+- broadcast [mensaje]
+- list-ifs
+- list-ports [nombre de host]
+- execute [comando de sistema]
+- prime-factors [número entero]
