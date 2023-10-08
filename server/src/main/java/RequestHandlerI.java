@@ -32,7 +32,7 @@ public class RequestHandlerI implements RequestHandler
 
         Request request = new Request(s);
         Command command = commandMap.getOrDefault(request.getCommand(), notFoundCommand);
-        command.execute(clientProxy, request.getUsername(), request.getArgs());
+        command.execute(clientProxy, request.getUsername(), request.getHostname(), request.getArgs());
 
         if (command.isErroneous() && isMeasuringPerformance()) {
             unprocessedRequests++;

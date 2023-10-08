@@ -10,7 +10,7 @@ public class SendMessageCommand extends Command {
     }
 
     @Override
-    protected void executeProcess(ReceiverPrx clientProxy, String username, String args) {
+    protected void executeProcess(ReceiverPrx clientProxy, String username, String hostname, String args) {
         String[] command = args.split(":");
         if (command.length < 2) {
             setOutput("The message couldn't be sent due to a formatting error on your part.");

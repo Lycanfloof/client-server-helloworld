@@ -10,7 +10,7 @@ public class PerformanceReportCommand extends Command {
     }
 
     @Override
-    protected void executeProcess(ReceiverPrx clientProxy, String username, String args) throws Exception {
+    protected void executeProcess(ReceiverPrx clientProxy, String username, String hostname, String args) throws Exception {
         if (requestHandler.isMeasuringPerformance()) {
             setOutput("A performance report has already been requested.");
             return;

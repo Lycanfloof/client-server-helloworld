@@ -12,10 +12,10 @@ public abstract class Command {
         this.erroneous = false;
     }
 
-    public void execute(ReceiverPrx clientProxy, String username, String args) {
+    public void execute(ReceiverPrx clientProxy, String username, String hostname, String args) {
         try {
             startTime = System.nanoTime();
-            executeProcess(clientProxy, username, args);
+            executeProcess(clientProxy, username, hostname, args);
             endTime = System.nanoTime();
         } catch (Exception e) {
             setErroneous();
@@ -23,7 +23,7 @@ public abstract class Command {
         }
     }
 
-    protected abstract void executeProcess(ReceiverPrx clientProxy, String username, String args) throws Exception;
+    protected abstract void executeProcess(ReceiverPrx clientProxy, String username, String hostname, String args) throws Exception;
 
     public long getExecutionTime() {
         return endTime - startTime;

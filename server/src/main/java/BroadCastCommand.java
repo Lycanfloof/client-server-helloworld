@@ -10,7 +10,7 @@ public class BroadCastCommand extends Command {
     }
 
     @Override
-    protected void executeProcess(ReceiverPrx clientProxy, String username, String args) {
+    protected void executeProcess(ReceiverPrx clientProxy, String username, String hostname, String args) {
         if (args.isEmpty()) {
             setOutput("The message couldn't be sent because it is empty.");
             return;

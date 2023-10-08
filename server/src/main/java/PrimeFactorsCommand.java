@@ -2,7 +2,7 @@ import AppInterface.ReceiverPrx;
 
 public class PrimeFactorsCommand extends Command {
     @Override
-    public void executeProcess(ReceiverPrx clientProxy, String username, String args) {
+    public void executeProcess(ReceiverPrx clientProxy, String username, String hostname, String args) {
         Long integer = CommonLibrary.convertToNumber(args);
         if (integer != null)
             setOutput(calculatePrimeFactors(integer));

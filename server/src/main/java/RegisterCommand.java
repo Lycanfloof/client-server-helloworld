@@ -10,13 +10,14 @@ public class RegisterCommand extends Command {
     }
 
     @Override
-    protected void executeProcess(ReceiverPrx clientProxy, String username, String args) {
-        if (proxyMap.get(username) != null) {
+    protected void executeProcess(ReceiverPrx clientProxy, String username, String hostname, String args) {
+        String key = username + "-" + hostname;
+        if (proxyMap.get(key) != null) {
             setOutput("Registration wasn't possible because the name has already been picked.");
             return;
         }
 
-        proxyMap.put(username, clientProxy);
+        proxyMap.put(key, clientProxy);
         setOutput("You have been registered successfully.");
     }
 }
