@@ -11,7 +11,6 @@ public class RequestHandlerI implements RequestHandler
     private final ConcurrentMap<String, ReceiverPrx> proxyMap;
     private long receivedRequests;
     private long unprocessedRequests;
-    private long processedTime;
 
     public RequestHandlerI(ConcurrentMap<String, Command> commandMap,
                            Command notFoundCommand,
@@ -21,7 +20,6 @@ public class RequestHandlerI implements RequestHandler
         this.proxyMap = proxyMap;
         this.receivedRequests = 0;
         this.unprocessedRequests = 0;
-        this.processedTime = 0;
     }
 
     public ConcurrentMap<String, Command> getCommandMap() {
@@ -57,13 +55,10 @@ public class RequestHandlerI implements RequestHandler
     private String buildPerformanceReport(long executionTime) {
         String performanceReport = "";
 
-        processedTime += executionTime;
-        double serverThroughput = (double) (receivedRequests - unprocessedRequests) / (processedTime);
         double failureRate = (double) unprocessedRequests / receivedRequests;
         double successRate = (double) 1 - failureRate;
 
         performanceReport += "\n\nServer latency: " + new DecimalFormat("#.##").format(executionTime * 1e-6) + " ms.\n";
-        performanceReport += "Server throughput: " + new DecimalFormat("#.##").format(serverThroughput * 1e9) + " requests per second.\n";
         performanceReport += "Server success rate: " + new DecimalFormat("#.##").format(successRate * 100) + "%\n";
         performanceReport += "Server failure (unprocessed) rate: " + new DecimalFormat("#.##").format(failureRate * 100) + "%\n";
 
