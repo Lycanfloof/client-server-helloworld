@@ -2,54 +2,63 @@ import AppInterface.ReceiverPrx;
 import AppInterface.RequestHandler;
 import com.zeroc.Ice.Current;
 import java.text.DecimalFormat;
+import java.util.concurrent.ConcurrentMap;
 
 public class RequestHandlerI implements RequestHandler
 {
-    private long receivedRequests = 0;
-    private long unprocessedRequests = 0;
-    private long processedTime = 0;
+    private final ConcurrentMap<String, Command> commandMap;
+    private final Command notFoundCommand;
+    private ConcurrentMap<String, ReceiverPrx> proxyMap;
+    private long receivedRequests;
+    private long unprocessedRequests;
+    private long processedTime;
+
+    public RequestHandlerI(ConcurrentMap<String, ReceiverPrx> proxyMap,
+                           ConcurrentMap<String, Command> commandMap,
+                           Command notFoundCommand) {
+        this.proxyMap = proxyMap;
+        this.commandMap = commandMap;
+        this.notFoundCommand = notFoundCommand;
+        this.receivedRequests = 0;
+        this.unprocessedRequests = 0;
+        this.processedTime = 0;
+    }
 
     @Override
     public String handleRequest(ReceiverPrx clientProxy, String s, Current current)
     {
         receivedRequests++;
         Request request = new Request(s);
-        request.start();
+        Command command = commandMap.getOrDefault(request.getCommand(), notFoundCommand);
+        command.execute(request.getArgs());
 
-        if (request.isErroneous()) {
+        if (command.isErroneous()) {
             unprocessedRequests++;
         }
 
-        String performanceReport = buildPerformanceReport(request.requestTime());
-        String serverResponse = buildServerResponse(request) + performanceReport;
-        String clientResponse = buildClientResponse(request) + performanceReport;
+        String performanceReport = buildPerformanceReport(command.getExecutionTime());
+        String response = command.getOutput() + performanceReport;
+        String serverResponse = request.getPrefix() + response;
+        String clientResponse = "\nResponse: " + response;
 
         System.out.println(serverResponse);
 
         return clientResponse;
     }
 
-    private String buildServerResponse(Request request) {
-        return request.getPrefix() + request.getOutput();
-    }
+    private String buildPerformanceReport(long executionTime) {
+        String performanceReport = "";
 
-    private String buildClientResponse(Request request) {
-        return "\nResponse:" + request.getOutput();
-    }
-
-    private String buildPerformanceReport(long latency) {
-        String perfomanceReport = "";
-
-        processedTime += latency;
+        processedTime += executionTime;
         double serverThroughput = (double) (receivedRequests - unprocessedRequests) / (processedTime);
         double failureRate = (double) unprocessedRequests / receivedRequests;
         double successRate = (double) 1 - failureRate;
 
-        perfomanceReport += "\n\nServer latency: " + new DecimalFormat("#.##").format(latency * 1e-6) + " ms.\n";
-        perfomanceReport += "Server throughput: " + new DecimalFormat("#.##").format(serverThroughput * 1e9) + " requests per second.\n";
-        perfomanceReport += "Server success rate: " + new DecimalFormat("#.##").format(successRate * 100) + "%\n";
-        perfomanceReport += "Server failure (unprocessed) rate: " + new DecimalFormat("#.##").format(failureRate * 100) + "%\n";
+        performanceReport += "\n\nServer latency: " + new DecimalFormat("#.##").format(executionTime * 1e-6) + " ms.\n";
+        performanceReport += "Server throughput: " + new DecimalFormat("#.##").format(serverThroughput * 1e9) + " requests per second.\n";
+        performanceReport += "Server success rate: " + new DecimalFormat("#.##").format(successRate * 100) + "%\n";
+        performanceReport += "Server failure (unprocessed) rate: " + new DecimalFormat("#.##").format(failureRate * 100) + "%\n";
 
-        return perfomanceReport;
+        return performanceReport;
     }
 }
