@@ -5,6 +5,7 @@ import com.zeroc.Ice.Object;
 import com.zeroc.Ice.ObjectAdapter;
 import com.zeroc.Ice.Util;
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -27,7 +28,11 @@ public class Client {
             String username = System.getProperty("user.name");
             String hostname = InetAddress.getLocalHost().getHostName();
 
-            startRequestLoop(serverProxy, clientProxy, username, hostname);
+            if (args.length >= 2 && args[0].equals("rff")) {
+                readFromFile(args[1], serverProxy, clientProxy, username, hostname);
+            } else {
+                startRequestLoop(serverProxy, clientProxy, username, hostname);
+            }
         }
     }
 
@@ -50,6 +55,22 @@ public class Client {
 
         return ReceiverPrx.checkedCast(
                 adapter.createProxy(Util.stringToIdentity("Receiver")).ice_twoway().ice_secure(false)).ice_timeout(5000);
+    }
+
+    private static void readFromFile(String filePath, RequestHandlerPrx serverProxy, ReceiverPrx clientProxy, String username, String hostname) throws IOException {
+        try(BufferedReader reader = new BufferedReader(new FileReader(filePath)))
+        {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                long start = System.nanoTime();
+                String response = serverProxy.handleRequest(clientProxy, username + " : " + hostname + " : " + line);
+                long end = System.nanoTime();
+
+                response += getClientLatency(start, end);
+                System.out.println(response);
+            }
+        }
     }
 
     private static void startRequestLoop(RequestHandlerPrx serverProxy, ReceiverPrx clientProxy, String username, String hostname) throws IOException {
