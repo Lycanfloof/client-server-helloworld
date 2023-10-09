@@ -131,7 +131,7 @@ public class Client {
         try {
             response = serverProxy.handleRequest(clientProxy, username + " : " + hostname + " : " + message);
         } catch (InvocationTimeoutException e) {
-            response = "The request timed out.\n";
+            response = "The request timed out. ";
         }
 
         long end = System.nanoTime();
