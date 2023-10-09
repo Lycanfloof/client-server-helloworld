@@ -39,7 +39,7 @@ public class Client {
                 try { quantity = Long.parseLong(args[2]); } catch (NumberFormatException e) { quantity = 1; }
                 startRequestFromFile(args[1], quantity);
                 if (timedOut) {
-                    System.out.println("\nOne of the requests timed out\n.");
+                    System.out.println("\nOne of the requests timed out.\n");
                 }
             } else {
                 startRequestLoop();
