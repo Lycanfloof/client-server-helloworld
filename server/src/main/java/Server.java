@@ -17,6 +17,8 @@ public class Server
         try(Communicator communicator = Util.initialize(args, "config.server"))
         {
             adapterInit(communicator);
+            System.out.println("The server has been started.");
+
             communicator.waitForShutdown();
         }
     }

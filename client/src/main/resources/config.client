@@ -2,3 +2,4 @@ Server.Proxy=RequestHandler:tcp -p 9099
 Ice.Default.Host=192.168.0.171
 
 Client.Endpoints=tcp -h localhost
+Ice.Default.InvocationTimeout=5000

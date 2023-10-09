@@ -1,4 +1,5 @@
 Server.Endpoints=tcp -p 9099
 Ice.Default.Host=192.168.0.171
 
-Ice.ThreadPool.Server.SizeMax=128
+Ice.ThreadPool.Server.SizeMax=1
+#Ice.Default.InvocationTimeout=5000
