@@ -17,8 +17,8 @@ public class BroadCastCommand extends Command {
         }
 
         proxyMap.keySet().forEach((String receiver) -> {
-            if (!username.equals(receiver)) {
-                proxyMap.get(receiver).printString(args);
+            if (!(username + "-" + hostname).equals(receiver)) {
+                proxyMap.get(receiver).printString((username + "-" + hostname) + args);
             }
         });
 

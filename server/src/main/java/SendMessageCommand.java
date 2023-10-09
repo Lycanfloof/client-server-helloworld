@@ -18,8 +18,8 @@ public class SendMessageCommand extends Command {
         }
 
         String receiver = command[0];
-        if (username.equals(receiver)) {
-            setOutput("You cannot send messages to yourself (ha ha, you're lonely).");
+        if ((username + "-" + hostname).equals(receiver)) {
+            setOutput("You cannot send messages to yourself.");
             return;
         }
 
@@ -30,7 +30,7 @@ public class SendMessageCommand extends Command {
         }
 
         String message = command[1].trim();
-        receiverPrx.printString(message);
+        receiverPrx.printString((username + "-" + hostname) + message);
         setOutput("Message sent successfully.");
     }
 }

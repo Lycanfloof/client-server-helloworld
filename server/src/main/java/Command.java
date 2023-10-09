@@ -18,6 +18,7 @@ public abstract class Command {
             executeProcess(clientProxy, username, hostname, args);
             endTime = System.nanoTime();
         } catch (Exception e) {
+            e.printStackTrace();
             setErroneous();
             setOutput("An error has occurred while processing the request.");
         }
