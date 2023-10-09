@@ -30,7 +30,7 @@ public class SendMessageCommand extends Command {
         }
 
         String message = command[1].trim();
-        receiverPrx.printString((username + "-" + hostname) + message);
+        receiverPrx.printString((username + "-" + hostname) + ": " + message);
         setOutput("Message sent successfully.");
     }
 }

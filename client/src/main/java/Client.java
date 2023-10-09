@@ -16,6 +16,7 @@ public class Client {
     private static ReceiverPrx clientProxy;
     private static String username;
     private static String hostname;
+    private static boolean timedOut;
 
     public static void main(String[] args) {
         try {
@@ -37,6 +38,9 @@ public class Client {
                 long quantity;
                 try { quantity = Long.parseLong(args[2]); } catch (NumberFormatException e) { quantity = 1; }
                 startRequestFromFile(args[1], quantity);
+                if (timedOut) {
+                    System.out.println("\nOne of the requests timed out\n.");
+                }
             } else {
                 startRequestLoop();
             }
@@ -131,6 +135,7 @@ public class Client {
         try {
             response = serverProxy.handleRequest(clientProxy, username + " : " + hostname + " : " + message);
         } catch (InvocationTimeoutException e) {
+            timedOut = true;
             response = "The request timed out. ";
         }
 
