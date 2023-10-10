@@ -1,2 +1,7 @@
 #!/bin/bash
-java -jar ./client/build/libs/client.jar rff rff.txt $1
+for i in {1..4}
+do
+    java -jar client.jar rff rff.txt 24000
+done
+
+exit 0
