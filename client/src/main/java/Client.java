@@ -79,7 +79,7 @@ public class Client {
             previousThread.join();
     }
 
-    private static Thread sendFromFile(Thread previousThread, String filePath) throws IOException, InterruptedException {
+    private static Thread sendFromFile(Thread previousThread, String filePath) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath)))
         {
             Thread previous = previousThread;
