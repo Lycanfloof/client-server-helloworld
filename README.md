@@ -22,3 +22,7 @@ Los comandos soportados son:
 - list-ports [nombre de host]
 - execute [comando de sistema]
 - prime-factors [número entero]
+
+### Reporte para TIMEOUT:
+
+Este reporte se puede encontrar en la carpeta 'docs' de este proyecto :)
